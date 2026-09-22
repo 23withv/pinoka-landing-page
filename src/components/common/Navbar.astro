@@ -1,0 +1,14 @@
+---
+/**
+ * Navbar.astro
+ * Header navigasi publik Pinoka Landing Page
+ */
+import PublicNavbar from './PublicNavbar.svelte';
+
+const currentPath = Astro.url.pathname;
+---
+
+<PublicNavbar
+  client:load
+  currentPath={currentPath}
+/>
