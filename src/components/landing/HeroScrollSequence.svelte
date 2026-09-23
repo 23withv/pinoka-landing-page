@@ -1,221 +1,208 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte'
-  import { gsap } from 'gsap'
-  import { ScrollTrigger } from 'gsap/ScrollTrigger'
-  import HeroCaptions from './HeroCaptions.svelte'
+  import { onMount, onDestroy } from "svelte";
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import HeroCaptions from "./HeroCaptions.svelte";
+  import HeroContent from "./HeroContent.svelte";
 
-  const TOTAL_FRAMES = 839
-  const PRIORITY_FRAMES = 1
-  const BUFFER_AHEAD = 15
-  const SOURCE_WIDTH = 1280
-  const SOURCE_HEIGHT = 720
+  const TOTAL_FRAMES = 839;
+  const PRIORITY_FRAMES = 1;
+  const BUFFER_AHEAD = 15;
+  const SOURCE_WIDTH = 1280;
+  const SOURCE_HEIGHT = 720;
 
-  let heroContainerEl: HTMLElement
-  let canvasEl: HTMLCanvasElement
-  let ctx2d: CanvasRenderingContext2D | null = null
-  let ctx: gsap.Context | null = null
-  let enterTl: gsap.core.Timeline | null = null
+  let heroContainerEl: HTMLElement;
+  let canvasEl: HTMLCanvasElement;
+  let ctx2d: CanvasRenderingContext2D | null = null;
+  let ctx: gsap.Context | null = null;
 
-  const images: HTMLImageElement[] = new Array(TOTAL_FRAMES)
-  const playhead = { frame: 1 }
+  const images: HTMLImageElement[] = new Array(TOTAL_FRAMES);
+  const playhead = { frame: 1 };
 
-  let currentFrameIndex = 1
-  let lastRenderedIndex = 1
-  let progress = 0
-  let mistOpacity = 1
-  let isScrolling = false
-  let scrollTimeout: ReturnType<typeof setTimeout> | null = null
-  let refreshTimeout: ReturnType<typeof setTimeout> | null = null
-  let isDestroyed = false
+  let currentFrameIndex = 1;
+  let lastRenderedIndex = 1;
+  let progress = 0;
+  let mistOpacity = 1;
+  let isScrolling = false;
+  let scrollTimeout: ReturnType<typeof setTimeout> | null = null;
+  let isDestroyed = false;
 
   const getFrameUrl = (index: number) => {
-    const padded = String(index).padStart(4, '0')
-    return `/frames/frame_${padded}.webp`
-  }
+    const padded = String(index).padStart(4, "0");
+    return `/frames/frame_${padded}.webp`;
+  };
 
   const drawCover = (image: HTMLImageElement) => {
-    if (!ctx2d || !canvasEl) return
-    const w = window.innerWidth
-    const h = window.innerHeight
-    const imgW = image.naturalWidth || SOURCE_WIDTH
-    const imgH = image.naturalHeight || SOURCE_HEIGHT
-    const scale = Math.max(w / imgW, h / imgH)
-    const renderW = imgW * scale
-    const renderH = imgH * scale
-    const offsetX = (w - renderW) / 2
-    const offsetY = (h - renderH) / 2
+    if (!ctx2d || !canvasEl) return;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const imgW = image.naturalWidth || SOURCE_WIDTH;
+    const imgH = image.naturalHeight || SOURCE_HEIGHT;
+    const scale = Math.max(w / imgW, h / imgH);
+    const renderW = imgW * scale;
+    const renderH = imgH * scale;
+    const offsetX = (w - renderW) / 2;
+    const offsetY = (h - renderH) / 2;
 
-    ctx2d.clearRect(0, 0, w, h)
-    ctx2d.drawImage(image, offsetX, offsetY, renderW, renderH)
-  }
+    ctx2d.clearRect(0, 0, w, h);
+    ctx2d.drawImage(image, offsetX, offsetY, renderW, renderH);
+  };
 
   const getAvailableFrame = (index: number): HTMLImageElement | null => {
-    const exact = images[index - 1]
-    if (exact && exact.complete && exact.naturalWidth > 0) return exact
+    const exact = images[index - 1];
+    if (exact && exact.complete && exact.naturalWidth > 0) return exact;
     if (lastRenderedIndex >= 1 && images[lastRenderedIndex - 1]?.complete) {
-      return images[lastRenderedIndex - 1]
+      return images[lastRenderedIndex - 1];
     }
     for (let delta = 1; delta <= 50; delta++) {
-      const prev = index - 1 - delta
+      const prev = index - 1 - delta;
       if (prev >= 0 && images[prev]?.complete && images[prev].naturalWidth > 0) {
-        return images[prev]
+        return images[prev];
       }
-      const next = index - 1 + delta
-      if (next < TOTAL_FRAMES && images[next]?.complete && images[next].naturalWidth > 0) {
-        return images[next]
+      const next = index - 1 + delta;
+      if (
+        next < TOTAL_FRAMES &&
+        images[next]?.complete &&
+        images[next].naturalWidth > 0
+      ) {
+        return images[next];
       }
     }
-    return null
-  }
+    return null;
+  };
 
   const loadImage = (index: number) => {
-    if (index < 1 || index > TOTAL_FRAMES || images[index - 1]) return
-    const img = new Image()
-    img.src = getFrameUrl(index)
+    if (index < 1 || index > TOTAL_FRAMES || images[index - 1]) return;
+    const img = new Image();
+    img.src = getFrameUrl(index);
     img.onload = () => {
-      images[index - 1] = img
+      images[index - 1] = img;
       if (index === currentFrameIndex) {
-        renderCanvas(currentFrameIndex)
+        renderCanvas(currentFrameIndex);
       }
-    }
-  }
+    };
+  };
 
   const bufferFramesAhead = (frameIndex: number) => {
-    if (isDestroyed) return
-    const max = Math.min(frameIndex + BUFFER_AHEAD, TOTAL_FRAMES)
+    if (isDestroyed) return;
+    const max = Math.min(frameIndex + BUFFER_AHEAD, TOTAL_FRAMES);
     for (let i = frameIndex; i <= max; i++) {
       if (!images[i - 1]) {
-        loadImage(i)
+        loadImage(i);
       }
     }
-  }
+  };
 
   const renderCanvas = (target: number) => {
-    currentFrameIndex = Math.min(TOTAL_FRAMES, Math.max(1, target))
-    progress = (currentFrameIndex - 1) / (TOTAL_FRAMES - 1)
-    mistOpacity = Math.max(0, 1 - progress / 0.04)
+    currentFrameIndex = Math.min(TOTAL_FRAMES, Math.max(1, target));
+    progress = (currentFrameIndex - 1) / (TOTAL_FRAMES - 1);
+    mistOpacity = Math.max(0, 1 - progress / 0.04);
 
     if (progress > 0) {
-      bufferFramesAhead(currentFrameIndex)
-      isScrolling = true
-      if (scrollTimeout) clearTimeout(scrollTimeout)
+      bufferFramesAhead(currentFrameIndex);
+      isScrolling = true;
+      if (scrollTimeout) clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(() => {
-        isScrolling = false
-      }, 250)
+        isScrolling = false;
+      }, 250);
     } else {
-      isScrolling = false
-      if (scrollTimeout) clearTimeout(scrollTimeout)
+      isScrolling = false;
+      if (scrollTimeout) clearTimeout(scrollTimeout);
     }
 
-    const img = getAvailableFrame(currentFrameIndex)
+    const img = getAvailableFrame(currentFrameIndex);
     if (img && img.complete && img.naturalWidth > 0) {
-      drawCover(img)
-      lastRenderedIndex = currentFrameIndex
+      drawCover(img);
+      lastRenderedIndex = currentFrameIndex;
     } else {
-      loadImage(currentFrameIndex)
+      loadImage(currentFrameIndex);
     }
-  }
+  };
 
   const handleResize = () => {
-    if (!canvasEl || !ctx2d) return
-    const dpr = Math.min(window.devicePixelRatio || 1, 2)
-    const w = window.innerWidth
-    const h = window.innerHeight
-    canvasEl.width = w * dpr
-    canvasEl.height = h * dpr
-    canvasEl.style.width = `${w}px`
-    canvasEl.style.height = `${h}px`
-    ctx2d.setTransform(1, 0, 0, 1, 0, 0)
-    ctx2d.scale(dpr, dpr)
-    ctx2d.imageSmoothingEnabled = true
-    ctx2d.imageSmoothingQuality = 'high'
-    renderCanvas(currentFrameIndex)
-    ScrollTrigger.sort()
-    ScrollTrigger.refresh()
-  }
+    if (!canvasEl || !ctx2d) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    canvasEl.width = w * dpr;
+    canvasEl.height = h * dpr;
+    canvasEl.style.width = `${w}px`;
+    canvasEl.style.height = `${h}px`;
+    ctx2d.setTransform(1, 0, 0, 1, 0, 0);
+    ctx2d.scale(dpr, dpr);
+    ctx2d.imageSmoothingEnabled = true;
+    ctx2d.imageSmoothingQuality = "high";
+    renderCanvas(currentFrameIndex);
+  };
 
   const handleTopScroll = () => {
     if (window.scrollY <= 10 && currentFrameIndex !== 1) {
-      playhead.frame = 1
-      renderCanvas(1)
+      playhead.frame = 1;
+      renderCanvas(1);
     }
-  }
+  };
 
   onMount(() => {
-    ctx2d = canvasEl.getContext('2d', { alpha: false })
-    gsap.registerPlugin(ScrollTrigger)
+    ctx2d = canvasEl.getContext("2d", { alpha: false });
+    gsap.registerPlugin(ScrollTrigger);
+    if (typeof (ScrollTrigger as any).clearScrollMemory === "function") {
+      (ScrollTrigger as any).clearScrollMemory("manual");
+    }
 
-    handleResize()
+    handleResize();
 
     for (let i = 1; i <= Math.min(PRIORITY_FRAMES, TOTAL_FRAMES); i++) {
-      loadImage(i)
+      loadImage(i);
     }
 
     ctx = gsap.context(() => {
       gsap.to(playhead, {
         frame: TOTAL_FRAMES,
-        ease: 'none',
+        ease: "none",
+        onUpdate: () => {
+          renderCanvas(Math.round(playhead.frame));
+        },
         scrollTrigger: {
           trigger: heroContainerEl,
-          start: 'top top',
-          end: '+=5000',
+          start: "top top",
+          end: "+=5000",
           pin: true,
           pinSpacing: true,
           scrub: 0.5,
           anticipatePin: 1,
-          onUpdate: (self) => {
-            if (self.progress >= 1) {
-              renderCanvas(TOTAL_FRAMES)
-            } else if (self.progress <= 0) {
-              renderCanvas(1)
-            } else {
-              renderCanvas(Math.round(playhead.frame))
-            }
-          }
-        }
-      })
-    }, heroContainerEl)
+        },
+      });
+    }, heroContainerEl);
 
-    ScrollTrigger.sort()
-    ScrollTrigger.refresh()
-    refreshTimeout = setTimeout(() => {
-      ScrollTrigger.sort()
-      ScrollTrigger.refresh()
-    }, 200)
+    ScrollTrigger.refresh();
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (prefersReducedMotion) {
-      gsap.set(['.hero-enter-nav', '.hero-enter-left', '.hero-enter-right'], {
-        opacity: 1,
-        x: 0,
-        y: 0
-      })
-    } else {
-      enterTl = gsap.timeline({ delay: 0.05 })
-      enterTl
-        .fromTo('.hero-enter-nav', { y: -20 }, { y: 0, duration: 0.6, ease: 'power3.out', clearProps: 'all' }, 0)
-        .fromTo('.hero-enter-left', { x: -16, opacity: 0 }, { x: 0, opacity: 1, duration: 0.7, ease: 'power3.out', clearProps: 'all' }, 0.08)
-        .fromTo('.hero-enter-right', { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out', clearProps: 'all' }, 0.16)
-    }
+    window.addEventListener("resize", handleResize, { passive: true });
+    window.addEventListener("scroll", handleTopScroll, { passive: true });
 
-    window.addEventListener('resize', handleResize, { passive: true })
-    window.addEventListener('scroll', handleTopScroll, { passive: true })
-  })
+    // Activate hero entrance transition exactly ONCE
+    requestAnimationFrame(() => {
+      document.documentElement.classList.add("hero-ready");
+    });
+  });
 
   onDestroy(() => {
-    isDestroyed = true
-    if (enterTl) enterTl.kill()
-    ctx?.revert()
-    if (typeof window !== 'undefined') {
-      window.removeEventListener('resize', handleResize)
-      window.removeEventListener('scroll', handleTopScroll)
+    isDestroyed = true;
+    ctx?.revert();
+    if (typeof window !== "undefined") {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", handleTopScroll);
+      document.documentElement.classList.remove("hero-ready");
     }
-    if (scrollTimeout) clearTimeout(scrollTimeout)
-    if (refreshTimeout) clearTimeout(refreshTimeout)
-  })
+    if (scrollTimeout) clearTimeout(scrollTimeout);
+  });
 
-  $: heroOpacity = currentFrameIndex <= 80 ? 1 : currentFrameIndex >= 120 ? 0 : (120 - currentFrameIndex) / 40
-  $: isNavbarVisible = progress === 0 || !isScrolling
+  $: heroOpacity =
+    currentFrameIndex <= 80
+      ? 1
+      : currentFrameIndex >= 120
+        ? 0
+        : (120 - currentFrameIndex) / 40;
+  $: isNavbarVisible = progress === 0 || !isScrolling;
 </script>
 
 <div
@@ -238,7 +225,9 @@
     class="absolute inset-0 w-full h-full -z-20 pointer-events-none block"
   ></canvas>
 
-  <div class="absolute inset-0 -z-15 pointer-events-none bg-black/5 dark:bg-black/40 transition-colors duration-300"></div>
+  <div
+    class="absolute inset-0 -z-15 pointer-events-none bg-black/5 dark:bg-black/40 transition-colors duration-300"
+  ></div>
 
   <div
     class="absolute inset-0 -z-10 pointer-events-none bg-gradient-to-b from-white/30 via-white/10 to-transparent dark:from-black/40 dark:via-black/15 dark:to-transparent transition-opacity duration-150"
@@ -256,13 +245,11 @@
   {/if}
 
   <div
-    class="relative z-20 flex-1 flex flex-col justify-between w-full transition-opacity duration-300 ease-out"
-    style:opacity="{heroOpacity.toFixed(3)}"
-    style:pointer-events="{heroOpacity > 0.1 ? 'auto' : 'none'}"
+    class="relative z-20 flex-1 flex flex-col justify-between w-full will-change-[opacity]"
+    style:opacity={heroOpacity.toFixed(3)}
+    style:pointer-events={heroOpacity > 0.1 ? "auto" : "none"}
   >
-    <slot name="hero">
-      <slot />
-    </slot>
+    <HeroContent />
   </div>
 
   <HeroCaptions currentFrame={currentFrameIndex} />

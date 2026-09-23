@@ -1,19 +1,26 @@
 ---
-import '@/styles/global.css'
-import Navbar from '@/components/common/Navbar.astro'
-import SmoothScroll from '@/components/common/SmoothScroll.svelte'
+import "@/styles/global.css";
+import Navbar from "@/components/common/Navbar.astro";
+import SmoothScroll from "@/components/common/SmoothScroll.svelte";
 
 interface Props {
-  title?: string
-  description?: string
-  hideNavbar?: boolean
+  title?: string;
+  description?: string;
+  hideNavbar?: boolean;
+  image?: string;
 }
 
+const SITE_URL = "https://pinoka-landing-page.23withv.workers.dev";
+
 const {
-  title = 'Pinoka - Platform Digitalisasi Visual Produk Lokal Banyuwangi',
-  description = 'Platform kolaborasi modern yang mempertemukan UMKM Banyuwangi dan desainer kreatif untuk mendigitalisasi visual produk lokal.',
-  hideNavbar = false
-} = Astro.props
+  title = "Pinoka - Platform Digitalisasi Visual Produk Lokal Banyuwangi",
+  description = "Platform kolaborasi modern yang mempertemukan UMKM Banyuwangi dan desainer kreatif untuk mendigitalisasi visual produk lokal.",
+  hideNavbar = false,
+  image = "/og-image.png",
+} = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, SITE_URL).href;
+const ogImageUrl = new URL(image, SITE_URL).href;
 ---
 
 <!doctype html>
@@ -23,35 +30,115 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title}</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="canonical" href={new URL(Astro.url.pathname, 'https://pinoka.id').href} />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Pinoka" />
+    <meta property="og:locale" content="id_ID" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalUrl} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Device-Specific Favicon & App Icons -->
+    <link rel="icon" type="image/svg+xml" href="/icon-desktop-512.svg" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      sizes="192x192 512x512"
+      href="/icon-512x512.svg"
+    />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
+    <meta name="application-name" content="Pinoka" />
+    <meta name="apple-mobile-web-app-title" content="Pinoka" />
+    <meta name="theme-color" content="#36C6FE" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <!-- Preconnect to Google Fonts CDN -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@700..800&family=Poppins:wght@400..600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" media="print" onload="this.media='all'">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@700..800&family=Poppins:wght@400..600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      media="print"
+      onload="this.media='all'"
+    />
     <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@700..800&family=Poppins:wght@400..600&display=swap">
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@700..800&family=Poppins:wght@400..600&display=swap"
+      />
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      />
     </noscript>
 
+    <link
+      rel="preload"
+      href="/assets/3d/banyuwangi_map.glb"
+      as="fetch"
+      crossorigin="anonymous"
+    />
+
+    <!-- Preload Host Grotesk 800 for instant hero typography without FOUT glitch -->
+    <link
+      rel="preload"
+      href="https://fonts.gstatic.com/s/hostgrotesk/v5/co3UmWBnlCJ3U42vbbfdwMjzqHAXOdFzqU5PuWfJzhY.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin="anonymous"
+    />
+
     <!-- Preload Hero Sequence Frame 1 -->
-    <link rel="preload" as="image" href="/frames/frame_0001.webp" fetchpriority="high" type="image/webp" />
-    
-    <!-- Anti-flicker theme script - runs before DOM renders -->
+    <link
+      rel="preload"
+      as="image"
+      href="/frames/frame_0001.webp"
+      fetchpriority="high"
+      type="image/webp"
+    />
+
+    <!-- Anti-flicker theme & scroll restoration script - runs before DOM renders -->
     <script is:inline>
-      const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-      document.documentElement.setAttribute('data-theme', theme)
-      if (theme === 'dark') {
-        document.documentElement.classList.add('dark')
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+      }
+      if (window.scrollY > 0 && !window.location.hash) {
+        window.scrollTo(0, 0);
+      }
+      const theme =
+        localStorage.getItem("theme") ||
+        (window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+      if (theme === "dark") {
+        document.documentElement.classList.add("dark");
       } else {
-        document.documentElement.classList.remove('dark')
+        document.documentElement.classList.remove("dark");
       }
     </script>
   </head>
   <body class="overflow-x-clip">
-    <SmoothScroll client:idle />
+    <SmoothScroll client:load />
     {!hideNavbar && <Navbar />}
     <div id="base-content-container">
       <slot />
@@ -62,10 +149,10 @@ const {
 <style is:global>
   html,
   body {
-    min-height: 100%
+    min-height: 100%;
   }
   html,
   body {
-    width: 100%
+    width: 100%;
   }
 </style>
