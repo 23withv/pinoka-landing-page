@@ -220,6 +220,58 @@ html[data-theme="dark"],
   font-family: var(--font-heading);
 }
 
+/* Emil Kowalski Grade: Hero Entrance Transitions & Antialiasing */
+.hero-enter-left {
+  opacity: 0;
+  transform: translate3d(-18px, 0, 0);
+  will-change: transform, opacity;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  backface-visibility: hidden;
+  transition:
+    opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.08s,
+    transform 1.3s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
+}
+
+.hero-enter-right {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transition:
+    opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.24s,
+    transform 1.3s cubic-bezier(0.22, 1, 0.36, 1) 0.24s;
+}
+
+.hero-enter-nav {
+  opacity: 0;
+  transform: translate3d(0, -12px, 0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transition:
+    opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.15s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Activated state: triggers ONCE on page entry / refresh and NEVER replays */
+.hero-ready .hero-enter-left,
+.hero-ready .hero-enter-right,
+.hero-ready .hero-enter-nav {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-enter-nav,
+  .hero-enter-left,
+  .hero-enter-right {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 /* Golden Ratio & Responsive Typography Hierarchy */
 @layer utilities {
   /* Display Hero Utama (H1 Landing Page) */

@@ -1,0 +1,22 @@
+{
+  "name": "Pinoka",
+  "short_name": "Pinoka",
+  "description": "Platform Digitalisasi Visual Produk Lokal Banyuwangi",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#36C6FE",
+  "icons": [
+    {
+      "src": "/icon-512x512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-desktop-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
