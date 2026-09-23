@@ -1,8 +1,8 @@
 import { defineConfig } from 'astro/config';
 import svelte from '@astrojs/svelte';
 
-// https://astro.build/config
 export default defineConfig({
+  site: 'https://pinoka-landing-page.23withv.workers.dev',
   output: 'static',
   integrations: [
     svelte(),

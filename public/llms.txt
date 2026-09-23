@@ -1,10 +1,30 @@
 # Pinoka - Platform Digitalisasi Visual Produk Lokal Banyuwangi
 
-> Platform Kolaborasi Potensi Lokal Modern untuk mendigitalisasi visual produk UMKM Banyuwangi.
+> Platform kolaborasi modern yang mempertemukan pelaku UMKM Banyuwangi dengan desainer kreatif untuk mendigitalisasi etalase produk lokal, terhubung langsung ke WhatsApp tanpa biaya komisi.
 
-## Dokumen
-- [Tentang Pinoka](https://pinoka.id/): Informasi platform digitalisasi visual produk lokal
-- [Katalog UMKM](https://pinoka.id/umkm): Direktori produk dan toko lokal Banyuwangi
-- [Pendaftaran Akun](https://pinoka.id/auth/login): Portal masuk dan pendaftaran tenant dan desainer
-- [Ketentuan Layanan](https://pinoka.id/terms): Syarat dan ketentuan penggunaan platform
-- [Kebijakan Privasi](https://pinoka.id/privacy): Kebijakan perlindungan privasi data pengguna
+## Ringkasan Platform
+Pinoka adalah ekosistem digital mandiri yang dirancang khusus untuk mengangkat daya saing visual jenama dan produk lokal daerah Banyuwangi. Melalui sinergi antara pelaku UMKM, desainer visual, dan pembeli, Pinoka menyediakan website toko mandiri instan berkualitas profesional tanpa memerlukan keahlian koding.
+
+## Tiga Pilar Ekosistem
+- **Pelaku UMKM**: Toko online instan dengan subdomain resmi, pengelolaan produk semudah mengisi formulir, dan transaksi 100% langsung masuk ke WhatsApp bisnis tanpa potongan biaya komisi pihak ketiga.
+- **Desainer Kreatif**: Marketplace kurasi template etalase visual, wadah monetisasi karya kreatif, dan skema bagi hasil transparan yang otomatis dapat dicairkan.
+- **Konsumen / Pembeli**: Antarmuka belanja responsif, direktori toko produk otentik daerah terdekat, dan pemesanan cepat langsung ke WhatsApp pemilik usaha.
+
+## Alur Kerja (3 Langkah Praktis)
+1. **Pilih Desain Siap Pakai**: Menentukan tampilan katalog kurasi desainer profesional yang sesuai dengan karakter produk.
+2. **Unggah Produk & WhatsApp**: Memasukkan foto barang, menentukan harga, dan menautkan nomor WhatsApp usaha.
+3. **Terima Pesanan Mandiri**: Website toko aktif seketika dengan pesanan terkirim utuh ke WhatsApp bisnis.
+
+## Navigasi Bagian Landing Page
+- [Beranda Utama](https://pinoka-landing-page.23withv.workers.dev/): Pengenalan hero visual sinematik produk lokal
+- [Visi & Manifesto](https://pinoka-landing-page.23withv.workers.dev/#manifesto-statement): Standar komitmen kualitas otentik dan desain berkelas
+- [Sinergi 3 Ekosistem](https://pinoka-landing-page.23withv.workers.dev/#synergy): Visualisasi 3D WebGL peta interaktif Banyuwangi
+- [Alur Kerja](https://pinoka-landing-page.23withv.workers.dev/#value-matrix): Panduan langkah aktivasi etalase digital mandiri
+- [Testimoni & Ulasan](https://pinoka-landing-page.23withv.workers.dev/#testimonials): Cerita sukses mitra UMKM dan desainer
+- [Tanya Jawab (FAQ)](https://pinoka-landing-page.23withv.workers.dev/#faq): Informasi seputar koding, bagi hasil, biaya, dan hosting
+- [Konsultasi & Kontak](https://pinoka-landing-page.23withv.workers.dev/#contact): Saluran pendaftaran mitra dan konsultasi tim
+
+## Kontak & Informasi Resmi
+- Website: https://pinoka-landing-page.23withv.workers.dev
+- Email: halo@pinoka.id
+- Lokasi: Banyuwangi, Jawa Timur, Indonesia
